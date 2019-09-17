@@ -10,12 +10,24 @@ package questions.first.hundred;
  */
 public class TwoSum {
 
-    public static void main(String[] args) {
+    private static int target = 6;
+    private static int[] nums = {3, 2, 4};
 
+    public static void main(String[] args) {
+        System.out.println(twoSum(nums, target).toString());
     }
 
-    public int[] twoSum(int[] nums, int target) {
-        int[] a = {0, 0};
-        return a;
+    public static int[] twoSum(int[] nums, int target) {
+        int length = nums.length;
+        int[] results;
+        for (int i = 0; i < length; i++) {
+            for (int j = i + 1; j < length; j++) {
+                if (nums[i] + nums[j] == target) {
+                    results = new int[]{i, j};
+                    return results;
+                }
+            }
+        }
+        return null;
     }
 }
