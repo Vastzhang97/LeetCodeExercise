@@ -21,121 +21,29 @@ public class ValidParentheses {
 
     private static HashMap<Character, Character> map;
     private HashMap<Character, Character> mappings;
-    private static char LEFT1 = '(';
-    private static char RIGHT1 = ')';
-    private static char LEFT2 = '[';
-    private static char RIGHT2 = ']';
-    private static char LEFT3 = '{';
-    private static char RIGHT3 = '}';
 
     public static void main(String[] args) {
-//        System.out.println(isValid("()[]{}"));
-//        System.out.println(isValid("([)]"));
         ValidParentheses solution = new ValidParentheses();
-        System.out.println(solution.isValid("()[]{}"));
-        System.out.println(solution.isValid("([)]"));
+//        System.out.println(solution.isValid4("()[]{}"));
+        System.out.println(solution.isValid4("{()}"));
     }
 
-    private static boolean isValid2(String str) {
-        map = new HashMap<>();
-        map.put(LEFT1, RIGHT1);
-        map.put(LEFT2, RIGHT2);
-        map.put(LEFT3, RIGHT3);
-        Stack<Character> stack = new Stack<>();
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (map.containsKey(c)) {
-                stack.push(c);
-            } else {
-                char topElement = stack.lastElement();
-                for (char key : map.keySet()) {
-                    System.out.println(key);
-                }
-                for (char value : map.values()) {
-                    System.out.println(value);
-                }
-                if (topElement != map.get(c)) {
-                    return false;
-                }
-                stack.pop();
-            }
-        }
-        return stack.isEmpty();
-    }
-
-    @Deprecated
-    private static boolean isValid1(String str) {
-        if (str.contains(String.valueOf(LEFT1))) {
-            if (!str.contains(String.valueOf(RIGHT1))) {
-                return false;
-            }
-        }
-        if (str.contains(String.valueOf(LEFT2))) {
-            if (!str.contains(String.valueOf(RIGHT2))) {
-                return false;
-            }
-        }
-        if (str.contains(String.valueOf(LEFT3))) {
-            if (!str.contains(String.valueOf(RIGHT3))) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    @Deprecated
-    private static int isPair1(String str) {
-        int strLength = str.length();
-        char[] strArray = str.toCharArray();
-        int i = 0;
-        int pairSymbolIndex = -1;
-        for (; i < strLength; i++) {
-            if (LEFT1 == strArray[i]) {
-                pairSymbolIndex = isPair2(LEFT1, i, strArray);
-            }
-            if (LEFT2 == strArray[i]) {
-                pairSymbolIndex = isPair2(LEFT2, i, strArray);
-            }
-            if (LEFT3 == strArray[i]) {
-                pairSymbolIndex = isPair2(LEFT3, i, strArray);
-            }
-        }
-
-        return pairSymbolIndex;
-    }
-
-    @Deprecated
-    private static int isPair2(char symbol, int symbolIndex, char[] strArray) {
-        char pairSymbol = 0;
-        if (LEFT1 == symbol) {
-            pairSymbol = RIGHT1;
-        }
-        if (LEFT2 == symbol) {
-            pairSymbol = RIGHT2;
-        }
-        if (LEFT3 == symbol) {
-            pairSymbol = RIGHT3;
-        }
-        int pairSymbolIndex = -1;
-        for (; symbolIndex < strArray.length; symbolIndex++) {
-            if (pairSymbol == strArray[symbolIndex]) {
-                pairSymbolIndex = symbolIndex;
-            }
-        }
-        return pairSymbolIndex;
-    }
-
-    ValidParentheses() {
-        this.mappings = new HashMap<Character, Character>();
+    private ValidParentheses() {
+        this.mappings = new HashMap<>();
         this.mappings.put(')', '(');
         this.mappings.put('}', '{');
         this.mappings.put(']', '[');
     }
 
-    public boolean isValid(String s) {
-        Stack<Character> stack = new Stack<Character>();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
+    private boolean isValid2(String str) {
+
+        return false;
+    }
+
+    private boolean isValid1(String str) {
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
             if (this.mappings.containsKey(c)) {
                 char topElement = stack.empty() ? '#' : stack.pop();
                 if (topElement != this.mappings.get(c)) {
@@ -146,5 +54,46 @@ public class ValidParentheses {
             }
         }
         return stack.isEmpty();
+    }
+
+    /**
+     * 使用栈存储前一个括号，栈顶遇到匹配的就弹出，最后栈为空则通过
+     */
+    public boolean isValid3(String s) {
+        Stack<Character> stack = new Stack<>();
+        char[] chars = s.toCharArray();
+        for (char aChar : chars) {
+            if (stack.size() == 0) {
+                stack.push(aChar);
+            } else if (isSym(stack.peek(), aChar)) {
+                stack.pop();
+            } else {
+                stack.push(aChar);
+            }
+        }
+        return stack.size() == 0;
+    }
+
+    private boolean isSym(char c1, char c2) {
+        return (c1 == '(' && c2 == ')') || (c1 == '[' && c2 == ']') || (c1 == '{' && c2 == '}');
+    }
+
+    /**
+     * 从最内层开始找匹配到的括号对饼干替换为""，最后剩下全""则通过
+     */
+    private boolean isValid4(String s) {
+        while (s.contains("{}") || s.contains("[]") || s.contains("()")) {
+            if (s.contains("{}")) {
+                s = s.replace("{}", "");
+            }
+            if (s.contains("()")) {
+                s = s.replace("()", "");
+            }
+            if (s.contains("[]")) {
+                s = s.replace("[]", "");
+            }
+        }
+
+        return s.isEmpty();
     }
 }
